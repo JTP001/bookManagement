@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- These are necessary for styling the page with Bootstrap -->
+  <title>{% block title %}{% endblock %}</title>
+  {% load bootstrap5 %}
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+</head>
+
+
+<body class="bg-light bg-gradient">
+  <header class="navbar navbar-expand-lg navbar-dark flex-column flex-md-row bg-primary">
+    <div class="navbar-nav-scroll">
+      <ul class="navbar-nav bd-navbar-nav flex-row">
+        <li class="nav-item">         
+          <a class="btn navbar-brand" href="/home/">Home</a>
+        </li>
+        <li class="nav-item">         
+          <a class="btn navbar-brand" href="/add/">Add</a>
+        </li>
+        <li class="nav-item">         
+          <a class="btn navbar-brand" href="/inventory/">Inventory</a>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+<main class="my-3 text-center justify-content-center">
+  <h1 class="fw-bold">Inventory:</h1>
+
+  <!-- The filter options form starts collapsed and is made visible with this button -->
+  <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterOptions" aria-expanded="false" aria-controls="filterOptions">
+    Filter options
+  </button>
+  <div class="collapse" id="filterOptions">
+    <form action="" method="get" novalidate>
+      <div class="form-row">
+        {% csrf_token %}
+
+        <!-- This breaks down the base Django template form to work with Bootstrap -->
+        {% for field in filterset.form %}
+        <div class="container w-50 my-3">
+          <div class="form-group">
+
+            {% if field.errors %}
+              <div class="alert alert-danger">
+                {{ field.errors }}
+              </div>
+            {% endif %}
+
+            <label for="{{ field.auto_id }}">{{ field.name }}</label>
+            {{ field }}
+          </div>
+        </div>
+        {% endfor %}
+        <input class="btn btn-info" type="submit" value="Filter">
+      </div>
+    </form>
+  </div>
+
+  <!-- The actual list of inventory is here, broken down into each field and styled with Boostrap -->
+  <div class="row d-flex justify-content-center my-4">
+    {% for book in inventory_list %}
+    <div class="col-5 mx-2 my-2">
+      <div class="card bg-info bg-gradient">
+        {{ book.entryID }}<br/>
+        {{ book.title }}<br/>
+        {{ book.author }}<br/>
+        {{ book.genre }}<br/>
+        {{ book.pubDate }}<br/>
+        {{ book.isbn }}<br/>
+        </div>
+    </div>
+    {% endfor %}
+  </div>
+</main>
+
+</body>
+</html>
